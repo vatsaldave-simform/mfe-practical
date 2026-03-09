@@ -27,6 +27,7 @@ export default tseslint.config(
       '**/__generated__/**', // GraphQL codegen output — don't lint generated types
       'eslint.config.ts',
       'prettier.config.ts',
+      'vitest.workspace.ts',
     ],
   },
 

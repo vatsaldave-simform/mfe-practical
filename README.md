@@ -26,6 +26,16 @@ To run any task with Nx use:
 npx nx <target> <project-name>
 ```
 
+## Vitest configuration convention
+
+Use per-project `vitest.config.ts` files and keep environments aligned by project type:
+
+- Frontend projects (`apps/shell`, `apps/catalog`, `apps/cart`, `apps/checkout`, `apps/account`) use `environment: 'jsdom'`.
+- Backend projects (`apps/api`, `libs/api/*`) use `environment: 'node'`.
+- Shared libraries (`libs/shared/*`) use `environment: 'node'`, except React UI libs (`type:ui`) which use `environment: 'jsdom'`.
+
+The root [vitest.workspace.ts](vitest.workspace.ts) discovers project configs from `apps/*/vitest.config.ts` and `libs/**/vitest.config.ts`.
+
 These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
 
 [More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)

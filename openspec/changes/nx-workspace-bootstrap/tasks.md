@@ -62,12 +62,12 @@
 
 ## 7. Vitest Configuration
 
-- [ ] 7.1 `[root]` Install Vitest deps: `npm install --save-dev vitest @vitest/coverage-v8 @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom`
-- [ ] 7.2 `[root]` Create `vitest.workspace.ts` at root:
+- [x] 7.1 `[root]` Install Vitest deps: `npm install --save-dev vitest @vitest/coverage-v8 @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom`
+- [x] 7.2 `[root]` Create `vitest.workspace.ts` at root:
   ```ts
   export default ['apps/*/vitest.config.ts', 'libs/**/vitest.config.ts'];
   ```
-- [ ] 7.3 `[root]` Document the per-project vitest.config.ts convention:
+- [x] 7.3 `[root]` Document the per-project vitest.config.ts convention:
   - Frontend projects (apps/shell, apps/catalog, etc.): `environment: 'jsdom'`
   - Backend projects (apps/api, libs/api/\*): `environment: 'node'`
   - Shared libs (libs/shared/\*): `environment: 'node'` unless they contain React components (`type:ui` → jsdom)
