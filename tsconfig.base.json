@@ -1,0 +1,65 @@
+{
+  // Provides at least one input file so TypeScript accepts the composite:true flag
+  // on this base config (composite requires source files to exist).
+  // Individual project tsconfigs extend this and supply their own src files.
+  "include": ["types/**/*.d.ts"],
+  "compilerOptions": {
+    // Required for non-relative paths entries in "paths" below.
+    // Set to workspace root so all path aliases resolve from there.
+    "baseUrl": ".",
+
+    // --- Project references (Nx build graph) ---
+    // composite + emitDeclarationOnly: lets Nx use TypeScript project references
+    // to build libs in dependency order without emitting full JS (Rspack handles bundling).
+    "composite": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+
+    // --- Strict type-safety flags ---
+    // These are the minimum bar for the whole monorepo. All projects inherit them.
+    // strict:true enables: strictNullChecks, noImplicitAny, strictFunctionTypes, etc.
+    // We also add the extras not covered by the strict umbrella:
+    "strict": true,
+    "strictNullChecks": true, // null/undefined must be handled explicitly
+    "noImplicitAny": true, // every value must have a known type
+    "noUncheckedIndexedAccess": true, // arr[i] is T|undefined, not just T
+    "exactOptionalPropertyTypes": true, // { x?: string } ≠ { x: string | undefined }
+
+    // --- Additional strictness ---
+    "noImplicitOverride": true, // override keyword required when overriding a method
+    "noImplicitReturns": true, // every code path in a function must return
+    "noFallthroughCasesInSwitch": true, // prevent accidental switch fall-throughs
+    "noUnusedLocals": true, // dead variables are a code smell
+    "noEmitOnError": true, // don't produce output if there are type errors
+
+    // --- Module system ---
+    // nodenext matches the Node.js ESM/CJS resolution algorithm used by both
+    // apps/api (Node) and the Vite/Rspack dev servers (which mimic it).
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "isolatedModules": true, // each file must be independently compilable (required by esbuild/Rspack)
+    "importHelpers": true, // share tslib helpers across files instead of inlining them
+
+    // --- Targets ---
+    "lib": ["es2022"], // match the runtime environment (Node 20 / modern browsers via Rspack polyfill)
+    "target": "es2022", // output modern JS; Rspack/Babel downlevels for older browsers if needed
+
+    // Tells TypeScript to prefer the "@mfe-practical/source" export condition
+    // so project-reference builds resolve to .ts source rather than compiled .d.ts.
+    "customConditions": ["@mfe-practical/source"],
+
+    "skipLibCheck": true, // skip type-checking third-party .d.ts files (faster builds, avoids upstream type bugs)
+
+    // --- Path aliases ---
+    // Pre-declare all @shop/* aliases here so every app/lib can import shared
+    // packages by name without knowing their folder depth.
+    // Each alias points to the library's public barrel (src/index.ts).
+    // Add a new entry here whenever a new shared lib is created.
+    "paths": {
+      "@shop/shared-models": ["libs/shared/models/src/index.ts"],
+      "@shop/shared-data-access": ["libs/shared/data-access/src/index.ts"],
+      "@shop/shared-ui": ["libs/shared/ui/src/index.ts"],
+      "@shop/shared-utils": ["libs/shared/utils/src/index.ts"]
+    }
+  }
+}

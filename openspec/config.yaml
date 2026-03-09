@@ -1,0 +1,288 @@
+schema: spec-driven
+
+# ─────────────────────────────────────────────────────────────
+#  PROJECT CONTEXT
+#  Injected into every AI prompt. Keep this accurate as the
+#  codebase evolves — run `openspec update` after changes.
+# ─────────────────────────────────────────────────────────────
+context: |
+  ## Monorepo
+  Tool: Nx workspace (latest)
+  Org prefix: @shop (all path aliases use @shop/*)
+  Structure:
+    apps/
+      api/           ← Express.js + GraphQL backend (single Apollo Server)
+      shell/         ← React 19 MFE host (Module Federation v2)
+      catalog/       ← React 19 MFE remote (product browsing & search)
+      cart/          ← React 19 MFE remote (cart management)
+      checkout/      ← React 19 MFE remote (order placement & payment)
+      account/       ← React 19 MFE remote (user profile, order history)
+      # Future: admin/ (product management), dashboard/ (KPIs)
+    libs/
+      shared/
+        models/      ← shared TypeScript types, interfaces, enums
+        data-access/ ← GraphQL operations + codegen output
+        ui/          ← shared React 19 component library + design tokens
+        utils/       ← pure utility functions (no framework deps)
+      api/
+        auth/        ← JWT auth resolvers + middleware
+        products/    ← product resolvers + DataLoader
+        cart/        ← cart resolvers
+        orders/      ← order resolvers
+        # Each exports { typeDefs, resolvers } — merged in apps/api
+
+  ## Backend — apps/api
+  Runtime: Node.js 20+
+  Framework: Express.js (no NestJS)
+  API surface: GraphQL only — ONE Express app, ONE Apollo Server 4 instance
+  Schema strategy: Schema-first (.graphql files in libs/shared/models/src/graphql/)
+  Resolvers: written in TypeScript, located in libs/api/[feature]/src/resolvers/
+  Schema merge: each libs/api/[feature] exports { typeDefs, resolvers }; apps/api
+    merges via mergeTypeDefs + mergeResolvers (graphql-tools)
+  Middleware: express-validator for input validation, helmet, cors
+  Auth: JWT homebrew via jsonwebtoken (NO third-party auth provider)
+    - Access token: short-lived (15min), stored in-memory (React state)
+    - Refresh token: long-lived (7 days), httpOnly cookie
+    - Middleware pattern (not decorators), applied per-resolver via context
+  Database: SQLite via Prisma ORM
+    - Schema: apps/api/prisma/schema.prisma
+    - Client: generated at apps/api/prisma/client/
+    - Migrations: prisma migrate dev (local), prisma migrate deploy (CI)
+    - DataLoader used for all list/relation resolvers (no N+1)
+  No REST endpoints unless explicitly specified in a change proposal.
+
+  ## Frontend — apps/shell + apps/[remote]
+  Framework: React 19 (use React 19 APIs — useActionState, use(), etc.)
+  Module Federation: @module-federation/enhanced v2 (not Webpack 5 MF v1)
+    - Shell is the HOST — loads remotes at runtime
+    - Each remote exposes a single ./Module entry
+    - Shared singletons: react, react-dom, @apollo/client, graphql
+  Bundler: Rspack (used by @module-federation/enhanced v2)
+  Routing: React Router v7 in the shell; remotes are route-agnostic
+  Data fetching: Apollo Client 3 (no REST fetch unless explicitly specified)
+  State: React context + Apollo reactive vars (no Redux/Zustand unless proposed)
+  Styling: Radix UI (headless primitives) + CSS Modules + CSS custom properties
+    - Design tokens: CSS custom properties in libs/shared/ui/src/tokens/tokens.css
+    - Shell injects tokens.css ONCE via global.css (sets :root vars)
+    - Remotes use CSS Modules (Rspack hashes class names — no collisions)
+    - All color/spacing/radius values via var(--*) — never hardcoded
+    - Dark mode: [data-theme="dark"] on <html> in shell, all remotes respond via vars
+    - Radix UI for interactive primitives (Dialog, Select, Dropdown, etc.)
+      — behaviour + accessibility from Radix, visuals from CSS Modules
+    - NO Tailwind, NO Emotion, NO CSS-in-JS of any kind in remotes
+    - NO global styles in remotes (only shell owns global.css)
+
+  ## TypeScript
+  Mode: strict (all flags on — strictNullChecks, noImplicitAny, etc.)
+  Config: tsconfig.base.json at root, each app/lib extends it
+  Path aliases: configured in tsconfig.base.json + nx.json
+  No `any` — use `unknown` and narrow. No type assertions without a comment.
+  Prefer `type` over `interface` for object shapes; use `interface` only for
+  extension/implementation contracts.
+
+  ## GraphQL Codegen
+  Tool: @graphql-codegen/cli
+  Config: libs/shared/data-access/codegen.ts
+  Schema source: libs/shared/models/src/graphql/**/*.graphql
+  Output: libs/shared/data-access/src/lib/__generated__/
+  Generates: TypeScript types + React Apollo hooks (withHooks: true)
+  Nx target: nx run shared-data-access:codegen
+  Run codegen BEFORE implementing any frontend task that touches GraphQL.
+
+  ## Testing
+  Unit + integration: Vitest (not Jest)
+    Config: vitest.config.ts per project
+    Environment: jsdom for frontend, node for backend
+    Coverage: v8 provider, threshold 80%
+  Component tests: React Testing Library (RTL) + @testing-library/user-event
+  E2e: Playwright (apps/{app}/e2e/)
+  Mocking: vi.mock(), MSW (Mock Service Worker) for network-level mocks in RTL tests
+  Test file convention: *.spec.ts (unit), *.test.tsx (component), *.e2e.ts (e2e)
+  Never use Jest APIs (describe/it from jest, jest.fn()) — use vi.* equivalents.
+
+  ## Linting & Formatting
+  Linter: ESLint (flat config — eslint.config.ts at root)
+  Formatter: Prettier (prettier.config.ts at root)
+  Rules:
+    - @typescript-eslint/recommended-type-checked (strict)
+    - eslint-plugin-react + eslint-plugin-react-hooks
+    - eslint-plugin-jsx-a11y (accessibility required, not optional)
+    - eslint-plugin-import (enforce import order)
+    - No unused vars, no console.log in committed code
+  Pre-commit: lint-staged + husky (runs eslint --fix + prettier --write)
+  Nx lint target wraps ESLint; always run `nx affected -t lint` before proposing apply.
+
+  ## Nx Config & Conventions
+  nx.json: targetDefaults cache build, test, lint, codegen
+  Affected: always use `nx affected` in CI/PR workflows
+  Tags: each project tagged with scope:app|lib and type:feature|ui|data|util|api
+  Enforce module boundaries via @nx/enforce-module-boundaries ESLint rule:
+    - libs/shared/* can be used by anything
+    - libs/api/* can only be used by apps/api
+    - MFE remotes cannot import from each other (only from libs/shared/*)
+
+# ─────────────────────────────────────────────────────────────
+#  ARTIFACT RULES
+#  Injected per artifact type during /opsx:propose and /opsx:ff
+# ─────────────────────────────────────────────────────────────
+rules:
+  proposal:
+    - State which Nx projects are affected (list all: apps + libs).
+    - Identify whether the change touches backend (GraphQL schema/resolvers),
+      frontend (MFE shell or which remote), shared libs, or all three.
+    - If the GraphQL schema changes, flag it — codegen must run before
+      frontend implementation tasks begin.
+    - If a new MFE remote is introduced, note Module Federation v2 wiring
+      (new remote entry in shell's federation config + shared singletons).
+    - Include a rollback plan (e.g., revert migration, feature flag).
+    - State whether this is additive (no breaking changes) or a breaking change
+      to the GraphQL schema or a shared lib API.
+
+  specs:
+    description: |
+      - Use Given / When / Then format for all scenarios.
+      - For GraphQL changes: include the schema delta (new types, queries,
+        mutations, subscriptions) inline in the spec as a fenced ```graphql block.
+      - For frontend changes: specify which MFE remote owns the UI, expected
+        component tree (parent → children), and which Apollo hook is used.
+      - For shared lib changes: document the exported API surface before and after.
+      - Accessibility: every new interactive UI component MUST include an
+      aria-label / role scenario.
+      - Testing scenarios: every spec MUST include at least one happy-path and
+      one error/edge-case scenario with expected RTL assertions stated.
+      - TypeScript contract: call out any new types exported from libs/shared/models.
+      - Reference existing specs in openspec/specs/ if this change extends them.
+
+  design:
+    - Include a sequence diagram (Mermaid) for every GraphQL operation
+      (client → Apollo → resolver → data source → response).
+    - For MFE changes: diagram the Module Federation v2 load sequence
+        (shell bootstrap → remote fetch → component mount).
+    - Specify file locations for every new file (full path from repo root).
+    - Note which Nx project owns each new file.
+    - If adding a new Nx lib: specify the generate command and tag taxonomy.
+    - For schema-first GraphQL: show the .graphql file change alongside
+        the resolver implementation plan.
+    - Identify shared singleton concerns (e.g., Apollo cache normalization
+      across shell + remotes).
+
+  tasks:
+    - Prefix every task with the owning project in brackets ([shared-models], [shared-data-access], [shared-ui], [api], [api-auth], [api-products], [api-cart], [api-orders], [shell], [catalog], [cart], [checkout], [account], etc.).
+    - Order tasks to respect dependencies:
+        1. Schema / type changes (libs/shared/models)
+        2. Codegen (nx run shared-data-access:codegen)
+        3. Resolver / backend implementation (libs/api/* + apps/api)
+        4. Apollo Client + hooks (libs/shared/data-access)
+        5. MFE remote UI (apps/[remote])
+        6. Shell wiring (apps/shell — routing, federation config)
+        7. Unit tests (Vitest) for each layer
+        8. RTL component tests
+        9. Lint pass (nx affected -t lint)
+        10. E2e if scope warrants (Playwright)
+    - Never skip the codegen task when the GraphQL schema changes.
+    - Each task must be atomic (one file or one concern) — no "implement the feature" catch-alls.
+    - Mark tasks that can be parallelised with "(parallel)" suffix.
+
+# ─────────────────────────────────────────────────────────────
+#  WORKFLOW PREFERENCES
+# ─────────────────────────────────────────────────────────────
+workflow:
+  profile: expanded # enables /opsx:new, /opsx:ff, /opsx:verify, /opsx:sync
+  delivery: both # generate files + inline preview in chat
+  default_command: ff # after /opsx:new, default to fast-forward all artifacts
+
+  verify:
+    # /opsx:verify checks after /opsx:apply
+    - All new files exist at paths stated in design.md
+    - nx affected -t build passes (no TypeScript errors)
+    - nx affected -t lint passes (no ESLint violations)
+    - nx affected -t test passes (Vitest, coverage >= 80%)
+    - codegen output is up-to-date (no schema drift)
+    - No `any` types introduced (tsc --strict report clean)
+
+  archive:
+    # Merge into permanent specs on /opsx:archive
+    merge_specs: true
+    conflict_strategy: chronological # bulk-archive resolves conflicts in commit order
+
+# ─────────────────────────────────────────────────────────────
+#  CONVENTIONS (referenced in all generated artifacts)
+# ─────────────────────────────────────────────────────────────
+conventions:
+  naming:
+    components: PascalCase # UserCard.tsx
+    hooks: camelCase prefixed use # useUserData.ts
+    utils: camelCase # formatDate.ts
+    types: PascalCase suffixed Type # UserType, ProductInputType
+    enums: PascalCase, SCREAMING keys # UserRole.ADMIN
+    graphql_files: kebab-case.graphql # user-queries.graphql
+    test_files:
+      unit: '*.spec.ts'
+      component: '*.test.tsx'
+      e2e: '*.e2e.ts'
+
+  imports:
+    order:
+      - node builtins
+      - external packages
+      - Nx path aliases (@shop/*)
+      - relative imports
+    no_barrel_re_exports_in_remotes: true # avoid MFE bundle bloat
+
+  graphql:
+    operations_location: libs/shared/data-access/src/lib/operations/
+    schema_location: libs/shared/models/src/graphql/
+    codegen_output: libs/shared/data-access/src/lib/__generated__/
+    resolver_location: libs/api/[feature]/src/resolvers/
+    no_n_plus_one: true # always use DataLoader for list resolvers
+
+  styling:
+    approach: Radix UI + CSS Modules + CSS custom properties (design tokens)
+    tokens_file: libs/shared/ui/src/tokens/tokens.css
+    tokens_injected_by: apps/shell/src/styles/global.css (once, at root)
+    primitives_location: libs/shared/ui/src/primitives/
+    css_module_convention: '[ComponentName].module.css co-located with component'
+    rules:
+      - Use var(--*) tokens for all color, spacing, radius, typography values
+      - Never hardcode hex colors or px values that belong in tokens
+      - Never import Tailwind or any CSS-in-JS library in remotes
+      - Never write global styles in remotes (only shell owns global.css)
+      - Radix UI for all interactive primitives needing a11y (Dialog, Select, etc.)
+      - CSS Modules filename must match component filename exactly
+    token_categories:
+      - --color-brand-* (primary palette)
+      - --color-neutral-* (grays)
+      - --color-semantic-* (success, error, warning, info)
+      - --spacing-* (4pt scale: --spacing-1 through --spacing-16)
+      - --radius-* (sm, md, lg, full)
+      - --font-size-* (xs through 2xl)
+      - --font-weight-* (normal, medium, semibold, bold)
+      - --shadow-* (sm, md, lg)
+    dark_mode:
+      mechanism: "[data-theme='dark'] attribute on <html> (toggled by shell)"
+      all_tokens_have_dark_variants: true
+
+  module_federation:
+    version: v2
+    bundler: rspack
+    shell_config: apps/shell/module-federation.config.ts
+    remote_config: apps/[remote]/module-federation.config.ts
+    expose_entry: './Module' # all remotes expose this single entry
+    shared_singletons:
+      - react
+      - react-dom
+      - '@apollo/client'
+      - graphql
+
+  typescript:
+    strict: true
+    no_any: true
+    prefer_type_over_interface: true # except for extension contracts
+    explicit_return_types: true # on all exported functions
+
+  testing:
+    runner: vitest
+    component: rtl
+    e2e: playwright
+    coverage_threshold: 80
+    msw_for_network_mocks: true
