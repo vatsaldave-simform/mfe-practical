@@ -6,6 +6,10 @@ The shopping app requires a monorepo that can host a React 19 shell, four MFE re
 
 - Initialize a bare Nx workspace (`preset=ts`) with `@shop` as the org prefix
 - Install and configure `@nx/react`, `@nx/node`, `@nx/rspack`, `@nx/eslint`, `@nx/jest` (vitest), `@nx/playwright` plugins
+- Declare `apps/api` as a Node/Express GraphQL backend app (`scope:app`, `type:api`) and treat the current React-style scaffold as temporary drift to be corrected in this change
+- Define library framework policy for scaffolded libs:
+  - React library: `libs/shared/ui`
+  - TypeScript-only libraries: `libs/shared/models`, `libs/shared/data-access`, `libs/shared/utils`, `libs/api/*`
 - Configure `nx.json` with `targetDefaults` caching for `build`, `test`, `lint`, `codegen`; `serve` explicitly NOT cached
 - Configure `tsconfig.base.json` with strict mode and all `@shop/*` path aliases pre-defined for every planned app and lib
 - Configure ESLint flat config (`eslint.config.ts`) with `@nx/enforce-module-boundaries` encoding the full constraint matrix:
@@ -30,7 +34,7 @@ _(none — this is the initial bootstrap)_
 ## Impact
 
 - **All subsequent proposals depend on this change being complete** — no app or lib can be generated until the Nx workspace, path aliases, and module boundaries exist
-- **Affected projects**: root workspace configuration only — no `apps/` or `libs/` source code is written in this change, only directory structure + Nx project definitions
+- **Affected projects**: root workspace configuration plus app/lib scaffolds; `apps/api` must be server-oriented (Node/Express) rather than browser-oriented (React DOM)
 - **Dependencies introduced**: `nx`, `@nx/react`, `@nx/node`, `@nx/rspack`, `@nx/eslint`, `typescript`, `eslint`, `prettier`, `husky`, `lint-staged`, `vitest`, `@vitest/coverage-v8`, `@playwright/test`
 - **No breaking changes** — this is the initial state; nothing exists to break
 - **Rollback plan**: Delete the workspace directory. Nothing downstream exists yet.

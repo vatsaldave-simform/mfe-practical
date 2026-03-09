@@ -7,6 +7,7 @@
   },
   "private": true,
   "devDependencies": {
+    "@nx/esbuild": "22.5.4",
     "@nx/eslint": "^22.5.4",
     "@nx/eslint-plugin": "^22.5.4",
     "@nx/js": "22.5.4",
@@ -24,10 +25,12 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/eslint-plugin-jsx-a11y": "^6.10.1",
-    "@types/node": "^20.0.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "20.19.9",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitest/coverage-v8": "^3.2.4",
+    "esbuild": "^0.19.2",
     "eslint": "^9.39.3",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -49,6 +52,7 @@
     "apps/*"
   ],
   "dependencies": {
+    "express": "^4.21.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

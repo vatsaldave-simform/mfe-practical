@@ -21,7 +21,7 @@ No Nx workspace exists yet. The workspace root (`/home/vatsal/Desktop/mfe-practi
 
 **Non-Goals:**
 
-- Writing any application source code (no `src/` files in apps or libs)
+- Writing business application source code (scaffolding and entrypoint/runtime alignment are in scope)
 - Installing MFE-specific dependencies (`@module-federation/enhanced`, `@apollo/client`) — those belong in proposals that create the apps
 - Setting up CI/CD pipelines — that is Proposal 9
 - Database setup (Prisma) — that belongs in the API proposal
@@ -132,6 +132,34 @@ type:api     → Express resolvers, backend domain libs (libs/api/*)
 
 **Rationale**: `codegen` must be cached with schema files as inputs — otherwise every CI run regenerates GraphQL types even when the schema hasn't changed. `serve` must never be cached — a cached serve target would not start the dev server. `build` uses `dependsOn: ["^build"]` to ensure libs are built before apps that depend on them.
 
+---
+
+### D8 — `apps/api` runtime is Node/Express (not React browser)
+
+**Decision**: `apps/api` is a backend application scaffolded with `@nx/node:application` (framework: `express`) and remains tagged as `scope:app`, `type:api`.
+
+**Rationale**: The API app is the backend boundary (BFF/GraphQL server) for frontend MFEs. It must run in a Node runtime and own HTTP/GraphQL transport concerns. A React DOM scaffold (`main.tsx`, `index.html`, browser Rspack config) is a temporary mismatch and should be corrected.
+
+**Alternative rejected**: Keeping `apps/api` as a React app and layering backend concerns elsewhere — this blurs boundaries and weakens module constraints for `type:api`.
+
+---
+
+### D9 — Library framework policy: one React UI lib, everything else TS-only
+
+**Decision**:
+
+| Library path              | Framework/runtime         | Generator direction                  |
+| ------------------------- | ------------------------- | ------------------------------------ |
+| `libs/shared/ui`          | React                     | `@nx/react:library` (`bundler=none`) |
+| `libs/shared/models`      | TypeScript-only           | `@nx/js:library` (`bundler=none`)    |
+| `libs/shared/data-access` | TypeScript-only (core)    | `@nx/js:library` (`bundler=none`)    |
+| `libs/shared/utils`       | TypeScript-only           | `@nx/js:library` (`bundler=none`)    |
+| `libs/api/*`              | TypeScript-only (backend) | `@nx/js:library` (`bundler=none`)    |
+
+**Rationale**: Shared and API libs should stay runtime-agnostic or Node-oriented by default, with React confined to UI composition. This minimizes unnecessary bundling, keeps dependency graphs clean, and enforces clear frontend/backend boundaries.
+
+**Note**: If React adapters (hooks/providers) are needed for data access, add them under a UI-tagged React library instead of mixing them into TS core libs.
+
 ## Risks / Trade-offs
 
 | Risk                                                                     | Mitigation                                                                                                                 |
@@ -151,8 +179,10 @@ type:api     → Express resolvers, backend domain libs (libs/api/*)
 5. Configure `nx.json` targetDefaults as specified in D7
 6. Install and configure Husky + lint-staged
 7. Create `vitest.workspace.ts` root discovery file
-8. Create empty `apps/` and `libs/` scaffolding directories with `project.json` stubs and correct tags
-9. Run `nx graph` — verify all projects appear with correct tags
-10. Run `nx affected -t lint` — verify module boundary rules fire on a deliberate bad import
+8. Scaffold React frontend apps (`shell`, `catalog`, `cart`, `checkout`, `account`) with `scope:app`, `type:feature`
+9. Scaffold `apps/api` as Node/Express (`scope:app`, `type:api`) and ensure server runtime entrypoint (`src/main.ts`)
+10. Scaffold libraries using D9 policy (`libs/shared/ui` React; all other planned libs TS-only)
+11. Run `nx graph` — verify all projects appear with correct tags
+12. Run `nx affected -t lint` — verify module boundary rules fire on deliberate bad imports
 
 **Rollback**: Delete the workspace directory. No downstream artifacts exist at this stage.

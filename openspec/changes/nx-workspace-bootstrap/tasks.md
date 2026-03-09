@@ -80,20 +80,21 @@
 - [x] 8.4 `[checkout]` Generate `apps/checkout` with tags: `["scope:app", "type:feature"]` (parallel)
 - [x] 8.5 `[account]` Generate `apps/account` with tags: `["scope:app", "type:feature"]` (parallel)
 - [x] 8.6 `[api]` Generate `apps/api` with tags: `["scope:app", "type:api"]` (parallel)
+- [ ] 8.7 `[api-runtime]` Align `apps/api` to backend runtime intent: Node/Express app entrypoint (`src/main.ts`), no browser entrypoint (`src/main.tsx`) and no `index.html`
 
 ## 9. Project Scaffold — Shared Libs
 
-- [ ] 9.1 `[shared-models]` Generate `libs/shared/models` with tags: `["scope:lib", "type:model"]` (parallel)
-- [ ] 9.2 `[shared-data-access]` Generate `libs/shared/data-access` with tags: `["scope:lib", "type:data"]` (parallel)
-- [ ] 9.3 `[shared-ui]` Generate `libs/shared/ui` with tags: `["scope:lib", "type:ui"]` (parallel)
-- [ ] 9.4 `[shared-utils]` Generate `libs/shared/utils` with tags: `["scope:lib", "type:util"]` (parallel)
+- [ ] 9.1 `[shared-models]` Generate `libs/shared/models` as TypeScript-only (`@nx/js:library --bundler=none`) with tags: `["scope:lib", "type:model"]` (parallel)
+- [ ] 9.2 `[shared-data-access]` Generate `libs/shared/data-access` as TypeScript-only core (`@nx/js:library --bundler=none`) with tags: `["scope:lib", "type:data"]` (parallel)
+- [ ] 9.3 `[shared-ui]` Generate `libs/shared/ui` as React library (`@nx/react:library --bundler=none`) with tags: `["scope:lib", "type:ui"]` (parallel)
+- [ ] 9.4 `[shared-utils]` Generate `libs/shared/utils` as TypeScript-only (`@nx/js:library --bundler=none`) with tags: `["scope:lib", "type:util"]` (parallel)
 
 ## 10. Project Scaffold — API Libs
 
-- [ ] 10.1 `[api-auth]` Generate `libs/api/auth` with tags: `["scope:lib", "type:api"]` (parallel)
-- [ ] 10.2 `[api-products]` Generate `libs/api/products` with tags: `["scope:lib", "type:api"]` (parallel)
-- [ ] 10.3 `[api-cart]` Generate `libs/api/cart` with tags: `["scope:lib", "type:api"]` (parallel)
-- [ ] 10.4 `[api-orders]` Generate `libs/api/orders` with tags: `["scope:lib", "type:api"]` (parallel)
+- [ ] 10.1 `[api-auth]` Generate `libs/api/auth` as TypeScript-only backend lib (`@nx/js:library --bundler=none`) with tags: `["scope:lib", "type:api"]` (parallel)
+- [ ] 10.2 `[api-products]` Generate `libs/api/products` as TypeScript-only backend lib (`@nx/js:library --bundler=none`) with tags: `["scope:lib", "type:api"]` (parallel)
+- [ ] 10.3 `[api-cart]` Generate `libs/api/cart` as TypeScript-only backend lib (`@nx/js:library --bundler=none`) with tags: `["scope:lib", "type:api"]` (parallel)
+- [ ] 10.4 `[api-orders]` Generate `libs/api/orders` as TypeScript-only backend lib (`@nx/js:library --bundler=none`) with tags: `["scope:lib", "type:api"]` (parallel)
 
 ## 11. Verification
 
@@ -102,3 +103,4 @@
 - [ ] 11.3 `[root]` Deliberately import a remote from another remote in a temp file, run `nx affected -t lint` — confirm module boundary violation is reported, then revert
 - [ ] 11.4 `[root]` Deliberately import a `libs/api/*` lib from a frontend app in a temp file — confirm module boundary violation fires, then revert
 - [ ] 11.5 `[root]` Run `tsc --noEmit` — confirm zero TypeScript errors across the workspace
+- [ ] 11.6 `[api-runtime]` Verify `apps/api` is server-oriented: no React DOM mount, no HTML entry file, and Vitest uses `environment: 'node'`

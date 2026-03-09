@@ -86,6 +86,34 @@ A correctly configured Nx monorepo that serves as the foundation for all apps an
 
 ---
 
+### API App Runtime Intent
+
+**Given** `apps/api` is tagged `scope:app`, `type:api`
+**When** the app scaffold is inspected
+**Then** it is server-oriented:
+
+- entrypoint is Node runtime code (`apps/api/src/main.ts`)
+- no React DOM mount file (`apps/api/src/main.tsx` does not exist)
+- no browser HTML entry (`apps/api/src/index.html` does not exist)
+
+---
+
+### Library Framework Classification
+
+**Given** all planned libraries are scaffolded
+**When** their project setup is inspected
+**Then** framework/runtime usage matches this matrix:
+
+| Library path              | Expected framework/runtime |
+| ------------------------- | -------------------------- |
+| `libs/shared/ui`          | React                      |
+| `libs/shared/models`      | TypeScript-only            |
+| `libs/shared/data-access` | TypeScript-only            |
+| `libs/shared/utils`       | TypeScript-only            |
+| `libs/api/*`              | TypeScript-only            |
+
+---
+
 ### Linting & Formatting
 
 **Given** `eslint.config.ts` and `prettier.config.ts` are configured
