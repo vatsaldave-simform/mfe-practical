@@ -24,6 +24,9 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/eslint-plugin-jsx-a11y": "^6.10.1",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.39.3",
     "eslint-plugin-import": "^2.32.0",
@@ -42,7 +45,8 @@
     "vitest": "^3.2.4"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "dependencies": {
     "react": "^19.0.0",

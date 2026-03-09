@@ -74,12 +74,12 @@
 
 ## 8. Project Scaffold — Apps
 
-- [ ] 8.1 `[shell]` Generate `apps/shell` as an empty Nx project with `project.json` tags: `["scope:app", "type:feature"]` (parallel)
-- [ ] 8.2 `[catalog]` Generate `apps/catalog` with tags: `["scope:app", "type:feature"]` (parallel)
-- [ ] 8.3 `[cart]` Generate `apps/cart` with tags: `["scope:app", "type:feature"]` (parallel)
-- [ ] 8.4 `[checkout]` Generate `apps/checkout` with tags: `["scope:app", "type:feature"]` (parallel)
-- [ ] 8.5 `[account]` Generate `apps/account` with tags: `["scope:app", "type:feature"]` (parallel)
-- [ ] 8.6 `[api]` Generate `apps/api` with tags: `["scope:app", "type:api"]` (parallel)
+- [x] 8.1 `[shell]` Generate `apps/shell` as an empty Nx project with `project.json` tags: `["scope:app", "type:feature"]` (parallel)
+- [x] 8.2 `[catalog]` Generate `apps/catalog` with tags: `["scope:app", "type:feature"]` (parallel)
+- [x] 8.3 `[cart]` Generate `apps/cart` with tags: `["scope:app", "type:feature"]` (parallel)
+- [x] 8.4 `[checkout]` Generate `apps/checkout` with tags: `["scope:app", "type:feature"]` (parallel)
+- [x] 8.5 `[account]` Generate `apps/account` with tags: `["scope:app", "type:feature"]` (parallel)
+- [x] 8.6 `[api]` Generate `apps/api` with tags: `["scope:app", "type:api"]` (parallel)
 
 ## 9. Project Scaffold — Shared Libs
 

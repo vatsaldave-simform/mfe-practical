@@ -1,0 +1,19 @@
+{
+  "name": "@mfe-practical/cart",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/cart/src",
+  "projectType": "application",
+  "tags": [
+    "scope:app",
+    "type:feature"
+  ],
+  "// targets": "to see all targets run: nx show project @mfe-practical/cart --web",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run --config apps/cart/vitest.config.ts --passWithNoTests"
+      }
+    }
+  }
+}

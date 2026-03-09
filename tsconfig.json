@@ -2,5 +2,25 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "include": ["vitest.config.ts"],
+  "references": [
+    {
+      "path": "./apps/shell"
+    },
+    {
+      "path": "./apps/catalog"
+    },
+    {
+      "path": "./apps/cart"
+    },
+    {
+      "path": "./apps/checkout"
+    },
+    {
+      "path": "./apps/account"
+    },
+    {
+      "path": "./apps/api"
+    }
+  ]
 }
