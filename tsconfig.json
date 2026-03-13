@@ -21,6 +21,30 @@
     },
     {
       "path": "./apps/api"
+    },
+    {
+      "path": "./libs/shared/data-access"
+    },
+    {
+      "path": "./libs/shared/models"
+    },
+    {
+      "path": "./libs/api/products"
+    },
+    {
+      "path": "./libs/shared/utils"
+    },
+    {
+      "path": "./libs/api/orders"
+    },
+    {
+      "path": "./libs/shared/ui"
+    },
+    {
+      "path": "./libs/api/auth"
+    },
+    {
+      "path": "./libs/api/cart"
     }
   ]
 }
