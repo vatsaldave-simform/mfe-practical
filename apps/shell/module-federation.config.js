@@ -1,3 +1,5 @@
+const { shareCoreSingletons } = require('../../module-federation.shared');
+
 module.exports = {
   name: '@mfe-practical/shell',
   remotes: [
@@ -6,4 +8,5 @@ module.exports = {
     ['checkout', 'http://localhost:4203/remoteEntry.js'],
     ['account', 'http://localhost:4204/remoteEntry.js'],
   ],
+  shared: shareCoreSingletons,
 };

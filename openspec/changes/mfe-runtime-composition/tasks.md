@@ -11,9 +11,9 @@
 
 ## 3. Core-Only Shared Runtime Contract
 
-- [ ] 3.1 Configure only `react` and `react-dom` as shared singletons in shell.
-- [ ] 3.2 Configure the same core singleton set in every remote and verify settings are consistent.
-- [ ] 3.3 Ensure `@apollo/client`, `graphql`, and other non-core dependencies are not shared by default.
+- [x] 3.1 Configure only `react` and `react-dom` as shared singletons in shell.
+- [x] 3.2 Configure the same core singleton set in every remote and verify settings are consistent.
+- [x] 3.3 Ensure `@apollo/client`, `graphql`, and other non-core dependencies are not shared by default.
 
 ## 4. Shell Route Composition & Failure Isolation
 
