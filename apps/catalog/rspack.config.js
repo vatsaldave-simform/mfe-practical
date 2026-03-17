@@ -1,13 +1,23 @@
 const { NxAppRspackPlugin } = require('@nx/rspack/app-plugin');
 const { NxReactRspackPlugin } = require('@nx/rspack/react-plugin');
+const {
+  NxModuleFederationPlugin,
+  NxModuleFederationDevServerPlugin,
+} = require('@nx/module-federation/rspack');
 const { join } = require('path');
+
+const config = require('./module-federation.config');
 
 module.exports = {
   output: {
     path: join(__dirname, 'dist'),
+    publicPath: 'auto',
   },
   devServer: {
-    port: 4200,
+    port: 4201,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     historyApiFallback: {
       index: '/index.html',
       disableDotRule: true,
@@ -30,5 +40,7 @@ module.exports = {
       // See: https://react-svgr.com/
       // svgr: false
     }),
+    new NxModuleFederationPlugin({ config }, { dts: false }),
+    new NxModuleFederationDevServerPlugin({ config }),
   ],
 };

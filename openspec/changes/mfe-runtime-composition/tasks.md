@@ -5,9 +5,9 @@
 
 ## 2. Host/Remote Federation Configuration
 
-- [ ] 2.1 Configure `apps/shell` as the host with remotes: `catalog`, `cart`, `checkout`, `account`.
-- [ ] 2.2 Configure each remote app to expose exactly one entry key: `./Module`.
-- [ ] 2.3 Define and align stable remote names and development entry URLs across host and remotes.
+- [x] 2.1 Configure `apps/shell` as the host with remotes: `catalog`, `cart`, `checkout`, `account`.
+- [x] 2.2 Configure each remote app to expose exactly one entry key: `./Module`.
+- [x] 2.3 Define and align stable remote names and development entry URLs across host and remotes.
 
 ## 3. Core-Only Shared Runtime Contract
 
