@@ -17,9 +17,9 @@
 
 ## 4. Shell Route Composition & Failure Isolation
 
-- [ ] 4.1 Implement shell route mapping that mounts each remote `./Module` at its assigned route segment.
-- [ ] 4.2 Add per-route fallback UI for remote loading states.
-- [ ] 4.3 Add per-route remote error boundary behavior so one remote failure does not break unrelated routes.
+- [x] 4.1 Implement shell route mapping that mounts each remote `./Module` at its assigned route segment.
+- [x] 4.2 Add per-route fallback UI for remote loading states.
+- [x] 4.3 Add per-route remote error boundary behavior so one remote failure does not break unrelated routes.
 
 ## 5. Local Development Orchestration
 
