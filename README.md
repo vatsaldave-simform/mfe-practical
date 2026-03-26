@@ -26,6 +26,24 @@ To run any task with Nx use:
 npx nx <target> <project-name>
 ```
 
+## Local MFE composition
+
+Use the following command to start shell + all frontend remotes together for runtime composition testing:
+
+```sh
+npm run dev:frontend:compose
+```
+
+Deterministic local federation endpoints:
+
+- Shell: `http://localhost:4200`
+- Catalog remote entry: `http://localhost:4201/remoteEntry.js`
+- Cart remote entry: `http://localhost:4202/remoteEntry.js`
+- Checkout remote entry: `http://localhost:4203/remoteEntry.js`
+- Account remote entry: `http://localhost:4204/remoteEntry.js`
+
+You can also run individual apps with `npx nx serve @mfe-practical/<app-name>`.
+
 ## Vitest configuration convention
 
 Use per-project `vitest.config.ts` files and keep environments aligned by project type:

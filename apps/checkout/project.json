@@ -6,6 +6,13 @@
   "tags": ["scope:app", "type:feature"],
   "// targets": "to see all targets run: nx show project @mfe-practical/checkout --web",
   "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/checkout",
+        "command": "rspack serve --node-env=development --port=4203"
+      }
+    },
     "test": {
       "executor": "nx:run-commands",
       "options": {

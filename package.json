@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:frontend:compose": "nx run-many -t serve -p @mfe-practical/shell,@mfe-practical/catalog,@mfe-practical/cart,@mfe-practical/checkout,@mfe-practical/account --parallel=5"
   },
   "private": true,
   "devDependencies": {

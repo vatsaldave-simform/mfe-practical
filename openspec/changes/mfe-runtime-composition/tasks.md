@@ -23,9 +23,9 @@
 
 ## 5. Local Development Orchestration
 
-- [ ] 5.1 Define deterministic local ports for shell and all remotes in serve configuration.
-- [ ] 5.2 Add documented Nx command flow to run all frontend apps together for composition testing.
-- [ ] 5.3 Validate that shell resolves remotes without manual URL edits in a fresh local session.
+- [x] 5.1 Define deterministic local ports for shell and all remotes in serve configuration.
+- [x] 5.2 Add documented Nx command flow to run all frontend apps together for composition testing.
+- [x] 5.3 Validate that shell resolves remotes without manual URL edits in a fresh local session.
 
 ## 6. Independent Deploy Resolution
 

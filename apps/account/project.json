@@ -3,12 +3,16 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/account/src",
   "projectType": "application",
-  "tags": [
-    "scope:app",
-    "type:feature"
-  ],
+  "tags": ["scope:app", "type:feature"],
   "// targets": "to see all targets run: nx show project @mfe-practical/account --web",
   "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/account",
+        "command": "rspack serve --node-env=development --port=4204"
+      }
+    },
     "test": {
       "executor": "nx:run-commands",
       "options": {
