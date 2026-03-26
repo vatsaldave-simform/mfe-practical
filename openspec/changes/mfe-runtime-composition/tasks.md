@@ -29,12 +29,12 @@
 
 ## 6. Independent Deploy Resolution
 
-- [ ] 6.1 Configure environment-based remote URL mapping for staging/production while preserving project-name remotes for local development.
-- [ ] 6.2 Validate one-remote-at-a-time deploy simulation by pointing shell to a newer compatible remote build.
-- [ ] 6.3 Confirm no host `implicitDependencies` are introduced that force coupled remote rebuilds for independent deploy mode.
+- [x] 6.1 Configure environment-based remote URL mapping for staging/production while preserving project-name remotes for local development.
+- [x] 6.2 Validate one-remote-at-a-time deploy simulation by pointing shell to a newer compatible remote build.
+- [x] 6.3 Confirm no host `implicitDependencies` are introduced that force coupled remote rebuilds for independent deploy mode.
 
 ## 7. Verification & Quality Gates
 
-- [ ] 7.1 Add/adjust tests for remote route mount and remote-failure fallback behavior.
-- [ ] 7.2 Validate lint/typecheck/test for affected projects via `nx affected -t lint,test` and `nx affected -t build`.
-- [ ] 7.3 Update change artifacts if implementation discovers contract deltas before `/opsx:apply` completion.
+- [x] 7.1 Add/adjust tests for remote route mount and remote-failure fallback behavior.
+- [x] 7.2 Validate lint/typecheck/test for affected projects via `nx affected -t lint,test` and `nx affected -t build`.
+- [x] 7.3 Update change artifacts if implementation discovers contract deltas before `/opsx:apply` completion.

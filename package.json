@@ -4,7 +4,10 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "dev:frontend:compose": "nx run-many -t serve -p @mfe-practical/shell,@mfe-practical/catalog,@mfe-practical/cart,@mfe-practical/checkout,@mfe-practical/account --parallel=5"
+    "dev:frontend:compose": "nx run-many -t serve -p @mfe-practical/shell,@mfe-practical/catalog,@mfe-practical/cart,@mfe-practical/checkout,@mfe-practical/account --parallel=5",
+    "build:shell:staging": "MFE_DEPLOY_TARGET=staging nx build @mfe-practical/shell",
+    "deploy:prod": "MFE_DEPLOY_TARGET=production nx build @mfe-practical/shell",
+    "deploy:prod:catalog-canary": "MFE_DEPLOY_TARGET=production MFE_REMOTE_CATALOG_URL=https://cdn.example.com/catalog/canary/remoteEntry.js nx build @mfe-practical/shell"
   },
   "private": true,
   "devDependencies": {

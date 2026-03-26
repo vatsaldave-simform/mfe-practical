@@ -3,6 +3,9 @@
  *   4.1 Remote route mounting
  *   4.2 Per-route Suspense fallback
  *   4.3 Per-route error boundary (failure isolation)
+ *
+ * Environment-based remote URL resolution (task 6.1) and single-remote
+ * override simulation (task 6.2) are covered in remote-url-config.spec.ts.
  */
 import { Suspense } from 'react';
 import { cleanup, render, screen } from '@testing-library/react';

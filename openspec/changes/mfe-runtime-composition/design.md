@@ -99,5 +99,6 @@ This change introduces a single composition contract for `apps/shell` and four r
 
 ## Open Questions
 
-- Should environment-specific remote URL mapping be provided via static environment variables or a fetched runtime manifest?
+- ~~Should environment-specific remote URL mapping be provided via static environment variables or a fetched runtime manifest?~~
+  **Resolved (task 6.1):** Static environment variables (`MFE_DEPLOY_TARGET`, `MFE_REMOTE_<NAME>_URL`). Logic lives in `apps/shell/src/remote-url-config.js` and is unit-tested. A fetched runtime manifest adds runtime latency and operational complexity; env variables are sufficient for controlled deployments and allow per-remote URL override without rebuilding other remotes (task 6.2).
 - Do we need automated compatibility gates for remote contract versions in CI before production promotion?

@@ -44,6 +44,36 @@ Deterministic local federation endpoints:
 
 You can also run individual apps with `npx nx serve @mfe-practical/<app-name>`.
 
+## Environment-based remote resolution (staging/production)
+
+Shell uses project-name remotes in development (`catalog`, `cart`, `checkout`, `account`) and switches to URL tuple remotes when `MFE_DEPLOY_TARGET` is set to `staging` or `production`.
+
+Remote URL environment variables:
+
+- `MFE_REMOTE_CATALOG_URL`
+- `MFE_REMOTE_CART_URL`
+- `MFE_REMOTE_CHECKOUT_URL`
+- `MFE_REMOTE_ACCOUNT_URL`
+
+Example staging build:
+
+```sh
+MFE_DEPLOY_TARGET=staging \
+MFE_REMOTE_CATALOG_URL=https://staging-cdn.example.com/catalog/remoteEntry.js \
+MFE_REMOTE_CART_URL=https://staging-cdn.example.com/cart/remoteEntry.js \
+MFE_REMOTE_CHECKOUT_URL=https://staging-cdn.example.com/checkout/remoteEntry.js \
+MFE_REMOTE_ACCOUNT_URL=https://staging-cdn.example.com/account/remoteEntry.js \
+npx nx build @mfe-practical/shell
+```
+
+Independent deploy simulation (one remote at a time):
+
+```sh
+npm run deploy:prod:catalog-canary
+```
+
+This keeps `cart`, `checkout`, and `account` on their default mapped entries while pointing only `catalog` to a newer compatible build URL.
+
 ## Vitest configuration convention
 
 Use per-project `vitest.config.ts` files and keep environments aligned by project type:

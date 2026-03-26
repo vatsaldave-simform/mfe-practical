@@ -1,12 +1,11 @@
 const { shareCoreSingletons } = require('../../module-federation.shared');
+// Environment-based remote URL resolution is extracted into a testable module
+// (src/remote-url-config.js) following task 7.1 – keeping this build config
+// as a thin wrapper so the logic can be unit-tested independently.
+const { getRemotes } = require('./src/remote-url-config');
 
 module.exports = {
   name: '@mfe-practical/shell',
-  remotes: [
-    ['catalog', 'http://localhost:4201/remoteEntry.js'],
-    ['cart', 'http://localhost:4202/remoteEntry.js'],
-    ['checkout', 'http://localhost:4203/remoteEntry.js'],
-    ['account', 'http://localhost:4204/remoteEntry.js'],
-  ],
+  remotes: getRemotes(),
   shared: shareCoreSingletons,
 };
