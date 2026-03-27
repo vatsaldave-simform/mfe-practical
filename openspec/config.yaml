@@ -56,7 +56,7 @@ context: |
   Module Federation: @module-federation/enhanced v2 (not Webpack 5 MF v1)
     - Shell is the HOST — loads remotes at runtime
     - Each remote exposes a single ./Module entry
-    - Shared singletons: react, react-dom, @apollo/client, graphql
+    - Shared singletons: react, react-dom (apollo/client and graphql are intentionally isolated per remote — see mfe-runtime-composition spec)
   Bundler: Rspack (used by @module-federation/enhanced v2)
   Routing: React Router v7 in the shell; remotes are route-agnostic
   Data fetching: Apollo Client 3 (no REST fetch unless explicitly specified)
@@ -271,8 +271,9 @@ conventions:
     shared_singletons:
       - react
       - react-dom
-      - '@apollo/client'
-      - graphql
+      # @apollo/client and graphql are NOT shared — each remote owns its own instance.
+      # Decision recorded in openspec/specs/mfe-runtime-composition/spec.md.
+      # Revisit if cart↔checkout cross-cache requirements emerge.
 
   typescript:
     strict: true
